@@ -44,13 +44,33 @@
 (defn multiples [amount coin]
   (letfn [(dec-coin [value]
             (- value coin))]
-    (set (filter pos? (take amount (iterate dec-coin amount))))))
+    (filter pos? (take amount (iterate dec-coin (dec amount))))))
+
+(defstruct node :value :weight)
+
+(defn constant-weights [mults]
+  (map (fn [value] (struct node value 1))) mults)
+
+(defn ordered-weights [mults]
+  (def max (count mults))
+  (map
+    (fn [index] (struct node (nth mults index) (- max index)))
+    (range 0 (dec max))))
+
+(defn update-weights [base new-weights]
+  (map (fn [nd] (if ()))))
 
 (defn count-matrix [amount coins]
-  (def base (multiples amount (nth coins 0)))
-  (letfn [(foo [coin]
-            (count (intersection base (multiples amount coin))))]
-    (reduce + (map foo (rest coins)))))
+  (loop [index 1
+         options (constant-weights (multiples amount coins))
+         combinations 0]
+    (if (or (>= index (count coins)) (empty? options))
+      combinations
+      (recur
+        (inc index)t
+        (ordered-weights (multiples (nth coins (inc index)) coins))
+        combinations)))
+  )
 
 
 (def base (multiples 39 25))
@@ -59,8 +79,8 @@
 
 ;(print (bar 25))
 
-;(print (multiples 39 50))
+(print (multiples 39 1))
 
-(def amount 39)
-(println "calculated" (count-matrix amount [1 5 10 25 50]))
-(print "should be" (cc amount 5))
+;(def amount 29)
+;(println "calculated" (count-matrix amount [1 5 10 25 50]))
+;(print "should be" (cc amount 5))
