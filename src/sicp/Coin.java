@@ -1,32 +1,30 @@
 package sicp;
 
-
 import java.util.*;
 
 public class Coin {
 
     public static void main(String[] args) {
-        int amount = 29;
+        int amount = 49;
         List<Integer> coins = Arrays.asList(1, 5, 10, 25, 50);
 
         Map<Integer, Integer> weights = weights(amount, coins);
 
-        int result = 0;
+        int result = 1;
         for (int i = 1; i < coins.size(); i++){
             Iterator<Integer> multiples = multiples(amount, coins.get(i));
             int weight = amount / coins.get(i);
             while (multiples.hasNext()){
                 Integer mult = multiples.next();
                 if (weights.containsKey(mult)){
-                    int newWeight = weight + weights.get(mult);
-                    weight--;
                     result += weights.get(mult);
-                    weights.put(mult, newWeight);
+                    weights.put(mult, weight--);
                 }
             }
-        }
-        System.out.println(result);
 
+        }
+        
+        System.out.println(result);
     }
 
     private static Map<Integer, Integer> weights(int amount, List<Integer> coins) {
