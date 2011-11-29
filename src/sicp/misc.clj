@@ -8,18 +8,20 @@
       (* (f (- n 2)) 2)
       (* (f (- n 3)) 3))))
 
-(defn reduce-previous [window]
-  (+ (* 3 (nth window 0)) (* 2 (nth window 1) (nth window 2))))
-
-(def base-window )
+(defn linear-combination [s1 s2]
+  (reduce + (map * s1 s2)))
 
 (defn f-iter [n]
+  (def weights (range 3 0 -1))
   (if (< n 3)
     n
-    (loop [x 3 window (clojure.lang.PersistentQueue/EMPTY)]
-      (def value (reduce-previous window))
+    (loop [x 3 previously-computed (conj clojure.lang.PersistentQueue/EMPTY 0 1 2)]
+      (def value (linear-combination previously-computed weights))
       (if (= x n)
         value
-        (recur (inc x) (conj value (rest window)))))))
+        (recur (inc x) (conj (pop previously-computed) value))))))
 
-(println (f-iter 4))
+(println (f-iter 10))
+(println (f 10))
+
+

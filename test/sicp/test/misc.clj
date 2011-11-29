@@ -4,7 +4,7 @@
 
 (describe "Excercise 1.11 - recursive"
   (testing "Base conditions - returning the input value"
-    (it "should return -1 for negative -1"
+    (it "should return -1 for -1"
       (= -1 (f -1)))
     (it "should return 2 for 2"
       (= 2 (f 2))))
@@ -16,7 +16,7 @@
 
 (describe "Excercise 1.11 - iterative"
   (testing "Base conditions - returning the input value"
-    (it "should return -1 for negative -1"
+    (it "should return -1 for -1"
       (= -1 (f-iter -1)))
     (it "should return 2 for 2"
       (= 2 (f-iter 2))))
