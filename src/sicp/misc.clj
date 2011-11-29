@@ -21,7 +21,13 @@
         value
         (recur (inc x) (conj (pop previously-computed) value))))))
 
-(println (f-iter 10))
-(println (f 10))
+
+(defn pascal-triangle [level column]
+  (cond
+    (or (zero? level) (zero? column) (= level column)) 1
+    :else (+ (pascal-triangle (dec level) (dec column)) (pascal-triangle (dec level) column))))
+
+(defn pascal-triangle-row [level]
+  (map (partial pascal-triangle level) (range 0 (inc level))))
 
 
