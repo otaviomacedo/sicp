@@ -40,29 +40,33 @@
 (defn square [n]
   (*' n n))
 
-(defn calculate-exp [base squares mults]
-  (* (apply-n square base squares) (apply-n (partial * base) 1 mults)))
+(defn apply-stack [base stack]
+  (loop [s stack value 1]
+    (if (empty? s)
+      value
+      (recur (rest s) ((first s) value)))))
 
-(defn exp-iter [base exponent squares mults]
-  (cond
-    (= exponent 0) 1
-    (= exponent 1) (calculate-exp base squares mults)
-    :else (if (even? exponent)
-            (recur base (/ exponent 2) (inc squares) mults)
-            (recur base (dec exponent) squares (inc mults)))))
+(defn exp-stack [base exponent]
+  (loop [e exponent stack (list)]
+    (println (count stack))
+    (cond
+      (zero? e) (apply-stack base stack)
+      (even? e) (recur (/ e 2) (cons square stack))
+      :else (recur (dec e) (cons (partial * base) stack)))))
 
-(defn exp [base exponent]
-  (exp-iter base exponent 0 0))
 
 (defn exp-iter-naive [b counter product]
+  (println counter)
   (if (= counter 0)
     product
     (recur b
       (- counter 1)
       (*' b product))))
 
+(defn exp [base exponent]
+  (exp-stack base exponent))
 
-(println (exp 2 1000))
-(println (exp-iter-naive 2 1000 1))
+(exp 2 6000)
+;(println (exp-iter-naive 2 6000 1))
 ;(println (exp 2 1001))
 
