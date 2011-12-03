@@ -48,25 +48,33 @@
 
 (defn exp-stack [base exponent]
   (loop [e exponent stack (list)]
-    (println (count stack))
     (cond
       (zero? e) (apply-stack base stack)
       (even? e) (recur (/ e 2) (cons square stack))
-      :else (recur (dec e) (cons (partial * base) stack)))))
+      :else (recur (dec e) (cons (partial *' base) stack)))))
 
 
 (defn exp-iter-naive [b counter product]
-  (println counter)
   (if (= counter 0)
     product
     (recur b
       (- counter 1)
       (*' b product))))
 
-(defn exp [base exponent]
-  (exp-stack base exponent))
+(defn exp-smart [base exponent]
+  (loop [a 1 b base n exponent]
+    (cond
+      (zero? n) a
+      (even? n) (recur a (square b) (/ n 2))
+      :else (recur (*' a b) b (dec n)))))
 
-(exp 2 6000)
-;(println (exp-iter-naive 2 6000 1))
-;(println (exp 2 1001))
+(defn exp [base exponent]
+  (exp-iter-naive base exponent 1))
+
+
+(def base 19)
+(def exponent 104709)
+(println (time (exp-iter-naive base exponent 1)))
+(println (time (exp-stack base exponent )))
+(println (time (exp-smart base exponent )))
 

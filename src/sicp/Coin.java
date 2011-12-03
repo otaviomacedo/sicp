@@ -1,100 +1,86 @@
 package sicp;
 
-import java.util.*;
+import com.google.common.collect.ImmutableList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 import static com.google.common.collect.Maps.newHashMap;
 
 public class Coin {
 
     public static void main(String[] args) {
-        int amount = 50;
-        List<Integer> coins = Arrays.asList(1, 5, 10, 25, 50);
-
-        Map<Integer, Node> nodes = nodes(amount, coins);
-
-        int result = 0;
-        for (int i = 1; i < coins.size(); i++){
-            Iterator<Integer> multiples = multiples(amount, coins.get(i));
-            Node node = new Node(0, i);
-            while (multiples.hasNext()){
-                Integer mult = multiples.next();
-                if (nodes.containsKey(mult)){
-                    node = nodes.get(mult).shift(i, coins).plus(node);
-                    result = node.degree;
-                    nodes.put(mult, node);
-                }
-            }
-
-        }
-        
-        System.out.println(result + 1);
+        int amount = 100;
+        ImmutableList<Integer> coins = ImmutableList.of(1, 5, 10, 25, 50);
+        System.out.println(countChange(amount, coins));
     }
 
+    public static int countChange(final int amount, final List<Integer> coins) {
+        Stack<Cell> cells = new Stack<Cell>();
+        Cell mainCell = new Cell(amount, coins.size() - 1);
+        cells.add(mainCell);
 
-    private static class Node {
-        private final int degree, level;
+        HashMap<Cell,Integer> cache = newHashMap();
 
-        Node(int degree, int level) {
-            this.degree = degree;
-            this.level = level;
+        while (!cells.isEmpty()){
+            Cell cell = cells.peek();
+            if (cell.amount == 0){
+                cells.pop();
+                cache.put(cell, 1);
+            } else if (cell.amount < 0 || cell.index < 0){
+                cells.pop();
+                cache.put(cell, 0);
+            } else {
+                Cell cell1 = new Cell(cell.amount - coins.get(cell.index), cell.index);
+                Cell cell2 = new Cell(cell.amount, cell.index - 1);
+                if (cache.containsKey(cell1) && cache.containsKey(cell2)){
+                    cells.pop();
+                    cache.put(cell, cache.get(cell1) + cache.get(cell2));
+                } else {
+                    if (!cache.containsKey(cell1)){cells.push(cell1);}
+                    if (!cache.containsKey(cell2)){cells.push(cell2);}
+                }
+            }
         }
 
-        Node shift(int level, List<Integer> coins){
-            return level - this.level == 1
-                    ? new Node(degree, level)
-                    : new Node(degree + coins.get(this.level), level);
+        return cache.get(mainCell);
+    }
+
+    private static class Cell {
+        private final int amount, index;
+
+        private Cell(int amount, int index) {
+            this.amount = amount;
+            this.index = index;
         }
 
-        Node plus(Node other){
-            return new Node(this.degree + other.degree, level);
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Cell cell = (Cell) o;
+
+            if (amount != cell.amount) return false;
+            if (index != cell.index) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = amount;
+            result = 31 * result + index;
+            return result;
         }
 
         @Override
         public String toString() {
-            return String.format("(%d, %d)", degree, level);
+            return "(" + amount + "," + index + ')';
         }
     }
 
-    private static Map<Integer, Node> nodes(int amount, List<Integer> coins){
-        Map<Integer, Node> nodes = newHashMap();
 
-        Iterator<Integer> multiples = multiples(amount, coins.get(0));
-
-        final Node baseNode = new Node(1, 0);
-        while (multiples.hasNext()){
-            nodes.put(multiples.next(), baseNode);
-        }
-
-        return nodes;
-    }
-
-    private static Map<Integer, Integer> weights(int amount, List<Integer> coins) {
-        Map<Integer, Integer> weights = new HashMap<Integer, Integer>();
-        Iterator<Integer> multiples = multiples(amount, coins.get(0));
-        while (multiples.hasNext()){
-            weights.put(multiples.next(), 1);
-        }
-        return weights;
-    }
-
-    private static Iterator<Integer> multiples(final int amount, final int coin){
-        return new Iterator<Integer>() {
-            int nextValue = amount % coin;
-
-            public boolean hasNext() {
-                return nextValue < amount;
-            }
-
-            public Integer next() {
-                int result = nextValue;
-                nextValue += coin;
-                return result;
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
 
 }
