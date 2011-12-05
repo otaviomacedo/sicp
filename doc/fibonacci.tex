@@ -1,0 +1,37 @@
+\documentclass{scrartcl}
+\title{Study on the Fibonacci function}
+\subtitle{Trying to figure out an $O(log n)$ algorithm}
+\author{Otavio Macedo}
+\date{December 2011}
+\begin{document}
+   \maketitle
+
+Let $f(n)$ be the Fibonacci function. Its basic definition is as follows:
+
+\begin{eqnarray*}
+f(0) & = & 0\\
+f(1) & = & 1\\
+f(n) & = & f(n - 1) + f(n - 2), n > 1
+\end{eqnarray*}
+
+It seems that the formulation above is just a particular case of the more general definition:
+
+\begin{eqnarray*}
+f(0) & = & 0\\
+f(1) & = & 1\\
+f(2) & = & 1\\
+f(n) & = & f(i)f(n - i + 1) + f(i - 1)f(n - i), n > 2, 1 \le i \le n
+\end{eqnarray*}
+
+If $n$ is odd, the function can be rewritten as:
+
+$$f(n) = f^2((n+1)/2) + f^2((n+1)/2 - 1)$$
+
+If $n$ is even, there are two other ways to rewrite the function:
+
+\begin{eqnarray*}
+f(n) & = & f(n/2).(2f(n/2 - 1) + f(n/2)) \\
+      & = & f(n/2).(2f(n/2 + 1) - f(n/2))
+\end{eqnarray*}
+
+\end{document}

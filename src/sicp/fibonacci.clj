@@ -1,4 +1,5 @@
-(ns sicp.fibonacci)
+(ns sicp.fibonacci
+  (:use (clojure.contrib math)))
 
 (defn fibonacci [n]
   (loop [a 0 b 1 counter 0]
@@ -33,18 +34,26 @@
       (recur (cons head stack) (half head)))))
 
 (defn fib-stack [lesser greater stack]
+;  (println lesser greater)
   (cond
     (empty? stack) greater
     (even? (first stack)) (recur (sum-of-squares lesser greater) (function-a lesser greater) (rest stack))
     :else (recur (function-c lesser greater) (sum-of-squares lesser greater) (rest stack))))
 
-(defn fib [n]
+(defn fib-smart [n]
   (def candidate (primitives n))
   (if candidate
     candidate
     (fib-stack 1 1 (make-stack n))))
 
-(def n 10000)
-(println (time (fib n)))
+
+(defn print-equations [n]
+  (println (for [i (range 1 (inc (ceil (/ n 2))))] (format "\nf(%d)f(%d) + f(%d)f(%d)" i (inc (- n i)) (dec i) (- n i)))))
+
+
+(def n 10)
+(println (time (fib-smart n)))
 (println (time (fibonacci n)))
+
+(print-equations 10)
 
