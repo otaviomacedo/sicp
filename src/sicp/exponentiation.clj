@@ -22,6 +22,47 @@
         (- a m)
         (recur (+' a m) (dec b))))))
 
+(defn square [n]
+  (*' n n))
+
+(defn apply-stack [base stack]
+  (loop [s stack value 1]
+    (if (empty? s)
+      value
+      (recur (rest s) ((first s) value)))))
+
+(defn exp-stack [base exponent]
+  (loop [e exponent stack (list)]
+    (cond
+      (zero? e) (apply-stack base stack)
+      (even? e) (recur (/ e 2) (cons square stack))
+      :else (recur (dec e) (cons (partial *' base) stack)))))
+
+
+(defn exp-iter-naive [b counter product]
+  (if (= counter 0)
+    product
+    (recur b
+      (- counter 1)
+      (*' b product))))
+
+(defn exp-smart [base exponent]
+  (loop [a 1 b base n exponent]
+    (cond
+      (zero? n) a
+      (even? n) (recur a (square b) (/ n 2))
+      :else (recur (*' a b) b (dec n)))))
+
+(defn exp [base exponent]
+  (exp-iter-naive base exponent 1))
+
+
+(def base 19)
+(def exponent 104709)
+(println (time (exp-iter-naive base exponent 1)))
+(println (time (exp-stack base exponent )))
+(println (time (exp-smart base exponent )))
+
 (def a 388123712)
 (def b 316341672)
 (println (time (multiply a b)))

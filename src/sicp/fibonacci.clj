@@ -34,26 +34,28 @@
       (recur (cons head stack) (half head)))))
 
 (defn fib-stack [lesser greater stack]
-;  (println lesser greater)
   (cond
     (empty? stack) greater
-    (even? (first stack)) (recur (sum-of-squares lesser greater) (function-a lesser greater) (rest stack))
-    :else (recur (function-c lesser greater) (sum-of-squares lesser greater) (rest stack))))
+    (even? (first stack)) (recur
+                            (sum-of-squares lesser greater)
+                            (function-a lesser greater)
+                            (rest stack))
+    :else (recur
+            (function-c lesser greater)
+            (sum-of-squares lesser greater)
+            (rest stack))))
 
-(defn fib-smart [n]
+(defn fib-smart
+  "This is not the algorithm expected by Exercise 1.19 and it is unquestionably more
+  convoluted than theirs. Nonetheless, this algorithm's complexity is O(log n) both
+  in time and space. If you are interested in knowing why it works, see the explanation
+  at doc/fibonacci.tex."
+  [n]
   (def candidate (primitives n))
   (if candidate
     candidate
     (fib-stack 1 1 (make-stack n))))
 
-
-(defn print-equations [n]
-  (println (for [i (range 1 (inc (ceil (/ n 2))))] (format "\nf(%d)f(%d) + f(%d)f(%d)" i (inc (- n i)) (dec i) (- n i)))))
-
-
 (def n 10)
 (println (time (fib-smart n)))
 (println (time (fibonacci n)))
-
-(print-equations 10)
-
