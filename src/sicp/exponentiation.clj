@@ -54,16 +54,18 @@
       :else (recur (*' a b) b (dec n)))))
 
 (defn exp [base exponent]
-  (exp-iter-naive base exponent 1))
+  (exp-smart base exponent))
 
 
-(def base 19)
-(def exponent 104709)
-(println (time (exp-iter-naive base exponent 1)))
-(println (time (exp-stack base exponent )))
-(println (time (exp-smart base exponent )))
+;(def base 19)
+;(def exponent 104709)
+;(println (time (exp-iter-naive base exponent 1)))
+;(println (time (exp-stack base exponent )))
+;(println (time (exp-smart base exponent )))
+;
+;(def a 388123712)
+;(def b 316341672)
+;(println (time (multiply a b)))
+;(println (time (multiply-naive a b)))
 
-(def a 388123712)
-(def b 316341672)
-(println (time (multiply a b)))
-(println (time (multiply-naive a b)))
+;(println (rem (exp 10 17) 17))
