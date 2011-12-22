@@ -39,9 +39,3 @@
     (it "has intermediate elements as the sum of the two numbers above it"
       (= '(1 4 6 4 1) (pascal-triangle-row 4)))
     ))
-
-(describe "Exponentiation - iterative process"
-  (it "base condition: result = 1"
-    (= 1 (exp 3 0)))
-  (it "odd exponent"
-    (= 81 (exp 3 4))))

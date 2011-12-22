@@ -34,12 +34,12 @@
     (cond
       (= 3 count) 0
       (prime? n) (timed-prime-test n)
-      (recur (+ 2 n)))))
+      :else (recur (+ 2 n) (inc count)))))
 
 (defn search-for-primes [lower-bound]
   (if (even? lower-bound)
     (search-for-primes-odd (inc lower-bound))
     (search-for-primes-odd lower-bound)))
 
-
-(search-for-primes 10000000000)
+;TODO write this as a test
+;(search-for-primes 10000000000)

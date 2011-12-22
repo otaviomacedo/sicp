@@ -15,6 +15,14 @@
   (letfn [(add-dx [x] (+ x dx))]
     (* (sum f (+ a (/ dx 2.0)) add-dx b) dx)))
 
+(defn product-iter [term a next b acc]
+  (if (> a b)
+    acc
+    (recur term (next a) next b (*' acc (term a)))))
+
+(defn product [term a next b]
+  (product-iter term a next b 1))
+
 (defn simpsons-rule
   "Simpson's method for numerical function integration"
   [f a b n]
@@ -30,5 +38,5 @@
             (* (coefficient i) (y i)))]
     (* (/ h 3.0) (sum simpson-term 0 inc n))))
 
-(println (simpsons-rule cube 0 1 10))
-(println (integral cube 0 1 0.00001))
+(defn factorial [n]
+  (product identity 1 inc n))
