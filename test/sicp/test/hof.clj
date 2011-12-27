@@ -1,6 +1,7 @@
 (ns sicp.test.hof
   (:use [sicp.hof])
-  (:use [lazytest.describe]))
+  (:use [lazytest.describe])
+  (:use [clojure.contrib.math]))
 
 (def precision 0.00001)
 (describe "Cube integration by naive method"
@@ -22,7 +23,15 @@
   (it "sums the squares of the prime numbers in a given interval"
     (= 1014 (sum-of-squares-of-primes 5 20))))
 
+(def inv-phi 0.618033989);1/phi, where phi is the golden ratio
+(describe "Approximation of the 1/phi by a continued fraction"
+  (it "is accurate to 4 decimal places using the iterative process"
+    (< (abs (- inv-phi (cont-frac-iter (fn [i] 1.0) (fn [i] 1.0) 1000))) 0.0001)
+  (it "is accurate to 4 decimal places using the recursive process"
+    (< (abs (- inv-phi (cont-frac-recur (fn [i] 1.0) (fn [i] 1.0) 1000))) 0.0001 1))))
 
-(describe "Approximation of the golden ratio by a continued fraction"
-  (it "is accurate to 4 decimal places"
-    (< 0.00001 (cont-frac (fn [i] 1.0) (fn [i] 1.0) 12))))
+(def e 2.71828182845904523536028747135266249775724709369995)
+(describe "Euler's expansion"
+  (it "approximates e - 2"
+    (< (abs (- (- e 2) (approximate-e)))) 0.00000001))
+
