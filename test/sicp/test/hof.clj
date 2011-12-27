@@ -21,3 +21,8 @@
 (describe "Accumulation with filtering"
   (it "sums the squares of the prime numbers in a given interval"
     (= 1014 (sum-of-squares-of-primes 5 20))))
+
+
+(describe "Approximation of the golden ratio by a continued fraction"
+  (it "is accurate to 4 decimal places"
+    (< 0.00001 (cont-frac (fn [i] 1.0) (fn [i] 1.0) 12))))

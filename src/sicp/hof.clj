@@ -47,3 +47,15 @@
 
 (defn sum-of-squares-of-primes [a b]
   (filtered-accumulate square a inc b 0 + prime?))
+
+(defn cont-frac [n d k]
+  (loop [i k res 0]
+    (if (= 1 i)
+      res
+      (recur (dec i) (/ (n i) (+ (d i) res))))))
+
+(println (cont-frac
+           (fn [i] 1.0)
+           (fn [i] 1.0)
+           12))
+
