@@ -19,7 +19,7 @@
     (* (sum f (+ a (/ dx 2.0)) add-dx b) dx)))
 
 (defn product [term a next b]
-  (accumulation term a next b 1 *'))
+  (accumulation term a next b 1 *' ))
 
 (defn simpsons-rule
   "Simpson's method for numerical function integration"
@@ -39,13 +39,11 @@
 (defn factorial [n]
   (product identity 1 inc n))
 
-
 (defn filtered-accumulate [term a next b acc op pred]
-  (def value (if (pred a) (op acc (term a)) acc))
-  (println a ", " value)
-  (if (> a b)
-    acc
-    (recur term (next a) next b value op pred)))
+  (let [value (if (pred a) (op acc (term a)) acc)]
+    (if (> a b)
+      acc
+      (recur term (next a) next b value op pred))))
 
 (defn sum-of-squares-of-primes [a b]
   (filtered-accumulate square a inc b 0 + prime?))
