@@ -56,6 +56,3 @@
     candidate
     (fib-stack 1 1 (make-stack n))))
 
-(def n 10)
-(println (time (fib-smart n)))
-(println (time (fibonacci n)))

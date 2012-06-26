@@ -1,5 +1,5 @@
 (defproject sicp "1.0.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "Exercise project for the study of 'Structure and Interpretation of Computer Programs'"
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [org.clojure/clojure-contrib "1.1.0"]
                  [com.stuartsierra/lazytest "2.0.0-SNAPSHOT"]

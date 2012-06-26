@@ -6,6 +6,12 @@
 (def normal-coins '(1 5 10 25 50 100))
 (def strange-coins '(5 10 25 50 100))
 
+(describe "Money changer"
+  (it "doo bar"
+    (= 292 (change-count 100 5))))
+
+
+
 ;(describe "Money changer"
 ;
 ;  (testing "Exceptional conditions"
