@@ -14,34 +14,36 @@
             (change-count-recursive (- amount (value-of coin)) coin)
             (change-count-recursive amount (dec coin)))))
 
-;    private static int changeCoinsLinearSpace(int amount, int coin){
-;        List<Integer> combination = newArrayList(Collections.nCopies(coin - 1, 0))
-;
-;        int result = 0;
-;        while (carry(combination, amount)){
-;            result++;
-;        }
-;        return result + 1;
-;    }
-;
-;    private static boolean carry(List<Integer> combination, int amount){
-;        int i = 0;
-;        combination.set(i, combination.get(i) + 1);
-;        while (overflow(combination, amount)){
-;            combination.set(i, 0);
-;            i++;
-;            if (i > combination.size() - 1){
-;                return false;
-;            }
-;            combination.set(i, combination.get(i) + 1);
-;        }
-;        return true;
-;    }
 
+(defn replace-in-list [coll n x]
+  (concat (take n coll) (list x) (nthnext coll (inc n))))
 
+(defn change-count-iterative [amount coin]
+  (defn product [combination]
+    (reduce + (map * combination (rest values))))
 
-(defn overflow [combination amount]
-  (> (reduce + (map * combination (rest values))) amount))
+  (defn overflowed? [combination]
+    (> (count combination) coin))
 
+  (defn shift [combination i]
+    (def temp (replace-in-list combination i 0))
+    (replace-in-list temp (inc i) (inc (nth temp (inc i)))))
 
-(println "Resultado: " (change-count-recursive 100 4))
+  (defn next-comb [combination i]
+    (replace-in-list combination i (inc (nth combination i))))
+
+  (defn carry [combination i]
+    (def comb (next-comb combination i))
+    (if (<= (product comb) amount)
+      comb
+      (recur (shift comb i) (inc i))))
+
+  (defn count-carries [combination cnt]
+    (if (overflowed? combination)
+      cnt
+      (recur (carry combination 0) (inc cnt))))
+
+  (count-carries (repeat coin 0) 0))
+
+(println "Recursive: " (change-count-recursive 100 4))
+(println "Iterative: " (change-count-iterative 100 4))

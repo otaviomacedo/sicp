@@ -36,3 +36,10 @@
     (if (= iteration times)
       value
       (recur (f value) (inc iteration)))))
+
+(defn mdc [a b]
+  (if (zero? b)
+    a
+    (recur b (rem a b))))
+
+(println (mdc 823472837482273674326 23423712384723847288))
