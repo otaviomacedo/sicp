@@ -1,7 +1,12 @@
 (ns sicp.change
-  (:use [clojure.set]))
+  (:use [clojure.set])
+  (:use [clojure.repl]))
 
 (def values '(1, 5, 10, 25, 50))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;              Recursive version                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn value-of [coin]
   (nth values coin))
@@ -15,35 +20,51 @@
             (change-count-recursive amount (dec coin)))))
 
 
-(defn replace-in-list [coll n x]
-  (concat (take n coll) (list x) (nthnext coll (inc n))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;              Iterative version                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn change-count-iterative [amount coin]
-  (defn product [combination]
-    (reduce + (map * combination (rest values))))
+(defn change-count-iterative
+  "This is the iterative version of the change-count function. It is a constant space
+  algorithm, but what it essentially does is enumerate and count all valid combinations
+  (those that add up to the amount taken as input). But this is not good enough,
+  since currently it is taking much longer than the recursive version to compute the same
+  input."
+  [amount coin]
+  (letfn [(replace-item [coll n x]
+            (letfn [(repl [index item]
+                      (if (= index n) x item))]
+              (keep-indexed repl coll)))
 
-  (defn overflowed? [combination]
-    (> (count combination) coin))
+          (shift [combination i]
+            (def temp (replace-item combination i 0))
+            (if (< i (dec (count combination)))
+              (replace-item temp (inc i) (inc (nth temp (inc i))))
+              (cons 1 temp)))
 
-  (defn shift [combination i]
-    (def temp (replace-in-list combination i 0))
-    (replace-in-list temp (inc i) (inc (nth temp (inc i)))))
+          (product [combination]
+            (reduce + (map * combination (rest values))))
 
-  (defn next-comb [combination i]
-    (replace-in-list combination i (inc (nth combination i))))
+          (overflowed? [combination]
+            (> (count combination) coin))
 
-  (defn carry [combination i]
-    (def comb (next-comb combination i))
-    (if (<= (product comb) amount)
-      comb
-      (recur (shift comb i) (inc i))))
+          (next-comb [combination i]
+            (replace-item combination i (inc (nth combination i))))
 
-  (defn count-carries [combination cnt]
-    (if (overflowed? combination)
-      cnt
-      (recur (carry combination 0) (inc cnt))))
+          (carry [combination index]
+            (loop [comb (next-comb combination index)
+                   i index]
+              (if (<= (product comb) amount)
+                comb
+                (recur (shift comb i) (inc i)))))
 
-  (count-carries (repeat coin 0) 0))
+          (count-carries [combination cnt]
+            (if (overflowed? combination)
+              cnt
+              (recur (carry combination 0) (inc cnt))))]
+    (if (zero? amount)
+      0
+      (count-carries (repeat coin 0) 0))))
 
-(println "Recursive: " (change-count-recursive 100 4))
-(println "Iterative: " (change-count-iterative 100 4))
+(println "Recursive: " (time (change-count-recursive 100 4)))
+(println "Iterative: " (time (change-count-iterative 100 4)))

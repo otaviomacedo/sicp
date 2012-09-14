@@ -2,26 +2,21 @@
   (:use [sicp.change])
   (:use [lazytest.describe]))
 
-; Question: does it make sense to throw exceptions in functional programming?
-(def normal-coins '(1 5 10 25 50 100))
-(def strange-coins '(5 10 25 50 100))
-
 (describe "Money changer"
-  (it "doo bar"
-    (= 292 (change-count 100 5))))
 
+  (testing "Normal conditions"
+    (it "changes 100c"
+      (= 292 (change-count-iterative 100 4))))
 
-
-;(describe "Money changer"
-;
-;  (testing "Exceptional conditions"
-;    (it "Zero cent"
-;      (= 0 (change-count 0 normal-coins)))
+  (testing "Exceptional conditions"
+    (it "Zero cent"
+      (= 0 (change-count-iterative 0 4)))
 ;    (it "Negative value"
 ;      (= 0 (change-count -999 normal-coins)))
 ;    (it "Impossible combination"
 ;      (= 0 (change-count 26 strange-coins))))
-;
+  )
+
 ;  (testing "Values under 5c"
 ;    (it "1 cent"
 ;      (= 1 (change-count 1 normal-coins)))
@@ -51,5 +46,5 @@
 ;      (= 33 (change-count 98 normal-coins )))
 ;    (it "99 cents"
 ;      (= 33 (change-count 99 normal-coins ))))
-;
-;  )
+
+  )
